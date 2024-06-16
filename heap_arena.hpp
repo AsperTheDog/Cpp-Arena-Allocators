@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdlib>
-#include <iostream>
 #include <new>
 
 
@@ -62,6 +61,8 @@ private:
 
 inline void HeapTransArena::init(const size_t p_size)
 {
+    deinit();
+    if (p_size == 0) return;
     s_arena = static_cast<uint8_t*>(malloc(p_size));
     if (!s_arena)
         throw std::bad_alloc();
@@ -92,9 +93,8 @@ inline void HeapTransArena::reset(const size_t p_size)
         uint8_t* newPtr = static_cast<uint8_t*>(realloc(s_arena, p_size));
         if (!newPtr) throw std::bad_alloc();
         s_arena = newPtr;
+        s_size = p_size;
     }
-
-    s_size = p_size;
 }
 
 inline uint8_t* HeapTransArena::allocate(const size_t p_allocSize)
